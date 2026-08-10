@@ -207,7 +207,7 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end; /* no logo → keep player dock at the bottom */
   padding: max(var(--edge), env(safe-area-inset-top)) var(--edge)
     max(var(--edge), env(safe-area-inset-bottom));
 }
@@ -952,4 +952,4 @@ main {
   .player.is-playing .disc {
     transform: none;
   }
-}
+   }
