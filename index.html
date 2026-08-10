@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Music Vibes</title>
+    <meta
+      name="description"
+      content="Music Vibes — Feel the Vibes"
+    />
+    <meta name="theme-color" content="#0a4a50" />
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Music Vibes" />
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512.png" />
+
+
+    <!-- Absolute URLs — link previews drop relative ones. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Music Vibes" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:title" content="Music Vibes" />
+    <meta
+      property="og:description"
+      content="Feel the Vibes"
+    />
+    <meta property="og:url" content="https://hornokplease.xyz" />
+    <!-- Bump ?v= whenever the image changes: WhatsApp, iMessage and X cache
+         link previews for weeks and key that cache on the URL. -->
+    <meta property="og:image" content="https://hornokplease.xyz/assets/opengraph.jpg?v=2" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Truck Wala — highway bangers off the back of an Indian truck."
+    />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Music Vibes" />
+    <meta
+      name="twitter:description"
+      content="Feel the Vibes"
+    />
+    <meta name="twitter:image" content="https://hornokplease.xyz/assets/opengraph.jpg?v=2" />
+    <meta
+      name="twitter:image:alt"
+      content="Truck Wala — highway bangers off the back of an Indian truck."
+    />
+
+    <link rel="canonical" href="https://hornokplease.xyz" />
+
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Yatra+One&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+
+  <body>
+    <div class="bg" aria-hidden="true">
+      <div class="bg__layer bg__layer--1"></div>
+      <div class="bg__layer bg__layer--2"></div>
+      <div class="bg__scrim"></div>
+    </div>
+
+    <!-- Hidden YouTube iframe — this is the actual sound source. -->
+    <div class="yt-host" aria-hidden="true"><div id="yt-player"></div></div>
+
+    <!-- ── Top bar ───────────────────────────────────────────────
+         One grid row so the clock, the counter and the link share a
+         centre line — three separately-positioned boxes can't stay
+         aligned once their heights differ. -->
+    <header class="topbar">
+      <div class="clock" id="clock" aria-label="Current time"></div>
+
+      <div class="presence" aria-live="polite">
+        <span class="presence__dot" aria-hidden="true"></span>
+        <span class="presence__count" id="listeners">42</span>
+        <span class="presence__label">on the highway</span>
+        <!-- Hidden until the first real count lands; see trackPresence(). -->
+      </div>
+
+      <nav class="links" aria-label="Listen elsewhere">
+        <a
+          class="link"
+          id="link-ytm"
+          href="https://music.youtube.com/playlist?list=PLeatb7hupNV_AWUl_7ttbsKeCQh8tF5N4"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open the playlist on YouTube Music"
+          title="Open the playlist on YouTube Music"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 0C5.376 0 0 5.376 0 12s5.376 12 12 12 12-5.376 12-12S18.624 0 12 0zm0 19.104c-3.924 0-7.104-3.18-7.104-7.104S8.076 4.896 12 4.896s7.104 3.18 7.104 7.104-3.18 7.104-7.104 7.104zm0-13.332c-3.432 0-6.228 2.796-6.228 6.228S8.568 18.228 12 18.228s6.228-2.796 6.228-6.228S15.432 5.772 12 5.772zM9.684 15.54V8.46L15.816 12l-6.132 3.54z"
+            />
+          </svg>
+        </a>
+      </nav>
+    </header>
+
+    <!-- ── Horn ──────────────────────────────────────────────────── -->
+    <aside class="horns">
+      <button class="horn" id="horn" type="button" aria-label="Sound the horn">
+        <span class="horn__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path fill="currentColor" d="M3 9v6h4l5 4V5L7 9H3z" />
+            <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M15.4 8.4a5.2 5.2 0 010 7.2" />
+              <path d="M18.2 5.6a9.2 9.2 0 010 12.8" />
+            </g>
+          </svg>
+        </span>
+        <span class="horn__text">
+          <span class="horn__deva">हॉर्न ओके प्लीज़</span>
+          <span class="horn__en">Horn ok pleaseeee</span>
+        </span>
+      </button>
+    </aside>
+
+    <main>
+      <!-- ── Wordmark, painted onto the scene ──────────────────── -->
+      <h1 class="logo">
+        <img src="/assets/logo-original.jpg" alt="Music Vibes" class="logo__img" />
+      </h1>
+
+      <!-- ── Player ────────────────────────────────────────────── -->
+      <div class="dock">
+        <!-- Playlist pops up over the art -->
+        <section class="list" id="list" aria-label="Playlist">
+          <ol id="listItems"></ol>
+        </section>
+
+        <!-- The button lives inside the paragraph so it flows after the last
+             word — a sibling would sit at the edge of the text box, which a
+             balanced two-line couplet leaves far from the visible text. -->
+        <p class="bumper">
+          <span class="bumper__text" id="bumperText" aria-live="polite"
+            >बुरी नज़र वाले तेरा मुँह काला</span
+          ><button class="bumper__next" id="bumperNext" type="button" aria-label="Another line">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 11.5A8 8 0 106.3 17.7" />
+              <path d="M20 5.5v6h-6" />
+            </svg>
+          </button>
+        </p>
+
+        <section class="player" id="player" aria-label="Player">
+          <div class="disc" id="disc">
+            <div class="disc__ring">
+              <img id="cover" class="disc__art" alt="" src="" />
+            </div>
+            <span class="disc__hub" aria-hidden="true"></span>
+          </div>
+
+          <div class="meta">
+            <p class="meta__title" id="title">Loading the cassette…</p>
+            <p class="meta__artist" id="artist">&nbsp;</p>
+
+            <div
+              class="seek"
+              id="seek"
+              role="slider"
+              tabindex="0"
+              aria-label="Seek"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+              <div class="seek__rail"><div class="seek__fill" id="seekFill"></div></div>
+              <div class="seek__knob" id="seekKnob"></div>
+            </div>
+            <div class="time"><span id="tCur">0:00</span> / <span id="tDur">0:00</span></div>
+          </div>
+
+          <div class="controls">
+            <button id="shuffle" type="button" class="btn btn--toggle is-on" aria-label="Shuffle" aria-pressed="true">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M17 3l4 4-4 4V8h-2.2l-2.3 3.1 2.3 3.1H17V11l4 4-4 4v-3h-3.2l-2.6-3.5L8.6 15H3v-2h4.6l2.6-3.5L12.8 6H17V3zM3 9h3.4l1.5 2H3V9z"
+                />
+              </svg>
+            </button>
+            <button id="prev" type="button" class="btn" aria-label="Previous track">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+              </svg>
+            </button>
+            <button id="play" type="button" class="btn btn--play" aria-label="Play" disabled>
+              <svg class="i-play" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <svg class="i-pause" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+                <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
+              </svg>
+            </button>
+            <button id="next" type="button" class="btn" aria-label="Next track">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+                <path d="M16 6h2v12h-2zm-2 6L5.5 6v12z" />
+              </svg>
+            </button>
+            <button id="listBtn" type="button" class="btn btn--toggle" aria-label="Playlist" aria-expanded="false" aria-controls="list">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true">
+                <path d="M3 6h13v2H3zm0 5h13v2H3zm0 5h9v2H3zm15-6.5l4 3-4 3z" />
+              </svg>
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <noscript>
+      <p style="color: #fff; text-align: center; padding: 2rem">
+        This one needs JavaScript — the player is a YouTube iframe under the hood.
+      </p>
+    </noscript>
+
+    <script src="/app.js"></script>
+  
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('SW registered', reg.scope))
+            .catch(err => console.log('SW registration failed', err));
+        });
+      }
+    </script>
+
+  </body>
+</html>
